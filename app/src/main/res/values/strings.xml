@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">UmPayTest</string>
+    <string name="iccid">ICCID</string>
+    <string name="imei">IMEI</string>
+    <string name="imsi">IMSI</string>
+    <string name="btn_txt_share">分享</string>
+    <string name="btn_txt_upload">上传</string>
+    <string name="share_title">请选择</string>
+</resources>
