@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.google.android.gms.ads.AdRequest;
 import com.laole918.umpaytest.databinding.ActivityMainBinding;
 import com.laole918.umpaytest.handlers.MainActivityEventHandler;
 import com.laole918.umpaytest.model.DeviceInfo;
@@ -20,8 +21,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        binding.adView.loadAd(adRequest);
         binding.setHandler(new MainActivityEventHandler(this, binding));
         bindData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        binding.adView.resume();
+    }
+
+    @Override
+    protected void onPause() {
+        binding.adView.pause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        binding.adView.destroy();
+        super.onDestroy();
     }
 
     private void bindData() {
