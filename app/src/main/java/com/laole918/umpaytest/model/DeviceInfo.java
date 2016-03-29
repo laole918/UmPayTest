@@ -5,10 +5,10 @@ package com.laole918.umpaytest.model;
  */
 public class DeviceInfo {
 
-    String imei;
-    String msisdn;
-    String iccid;
-    String imsi;
+    private String imei;
+    private String msisdn;
+    private String iccid;
+    private String imsi;
 
     public String getImei() {
         return imei;

@@ -15,3 +15,19 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+# 忽略警告
+-ignorewarnings
+# JSON用到的解析类保护
+-keep class com.laole918.umpaytest.model.** { *; }
+# RxJava
+-dontwarn rx.**
+-keep class rx.** { *; }
+# okHttp3
+-dontwarn okhttp3.**
+-keep class okhttp3.** { *; }
+# retrofit2
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+
+-keepattributes Signature
+-keepattributes Exceptions

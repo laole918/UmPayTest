@@ -4,6 +4,7 @@ package com.laole918.umpaytest.model;
  * Created by laole918 on 2016/3/29 0029.
  */
 public class Order11Request {
+
     private String o_req_type;
     private String imei;
     private String iccid;
