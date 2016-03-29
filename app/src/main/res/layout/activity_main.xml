@@ -10,6 +10,10 @@
         <variable
             name="deviceInfo"
             type="com.laole918.umpaytest.model.DeviceInfo" />
+
+        <variable
+            name="response"
+            type="com.laole918.umpaytest.model.Order11Response" />
     </data>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -104,6 +108,36 @@
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/btnTextSize" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/txt_response"
+                    android:textColor="@color/textColor"
+                    android:textSize="@dimen/textSize" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{response.return_str}"
+                    android:textColor="@color/textColor"
+                    android:textSize="@dimen/textSize" />
+            </LinearLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="@{handler.onClickShareResponse}"
+                android:text="@string/btn_txt_share_response"
+                android:textColor="@color/textColor"
+                android:textSize="@dimen/btnTextSize" />
         </LinearLayout>
 
         <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
