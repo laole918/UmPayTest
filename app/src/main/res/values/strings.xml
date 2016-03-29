@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">小额测试</string>
+    <string name="app_name">联动测试</string>
     <string name="iccid">ICCID</string>
     <string name="imei">IMEI</string>
     <string name="imsi">IMSI</string>
