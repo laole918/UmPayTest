@@ -1,13 +1,12 @@
 <resources>
-    <string name="app_name">UmPayTest</string>
+    <string name="app_name">小额测试</string>
     <string name="iccid">ICCID</string>
     <string name="imei">IMEI</string>
     <string name="imsi">IMSI</string>
-    <string name="btn_txt_share">分享</string>
-    <string name="btn_txt_share_response">分享返回值</string>
-    <string name="btn_txt_upload">上传</string>
-    <string name="share_title">请选择</string>
-    <string name="txt_response">返回：</string>
+    <string name="btn_txt_share">分享设备信息</string>
+    <string name="btn_txt_share_response">分享服务器返回值</string>
+    <string name="btn_txt_upload">上传设备信息</string>
+    <string name="txt_response">返回值：</string>
     <string name="banner_ad_unit_id">ca-app-pub-1144530986936310/9995154589</string>
     <string name="txt_net_error">网络连接失败！</string>
     <string name="txt_empty">没有内容可分享！</string>

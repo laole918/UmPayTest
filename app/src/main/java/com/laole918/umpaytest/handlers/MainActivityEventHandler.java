@@ -38,7 +38,7 @@ public class MainActivityEventHandler {
     public void onClickShare(View view) {
         DeviceInfo deviceInfo = mBinding.getDeviceInfo();
         if (deviceInfo != null) {
-            shareText(JSONUtils.toJSONString(deviceInfo));
+            shareText(R.string.btn_txt_share, JSONUtils.toJSONString(deviceInfo));
         } else {
             showMessage(R.string.txt_empty);
         }
@@ -47,18 +47,18 @@ public class MainActivityEventHandler {
     public void onClickShareResponse(View view) {
         Order11Response response = mBinding.getResponse();
         if (response != null) {
-            shareText(JSONUtils.toJSONString(response));
+            shareText(R.string.btn_txt_share_response, JSONUtils.toJSONString(response));
         } else {
             showMessage(R.string.txt_empty);
         }
     }
 
-    private void shareText(String text) {
+    private void shareText(int titleId, String text) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, text);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        mContext.startActivity(Intent.createChooser(intent, mContext.getString(R.string.share_title)));
+        mContext.startActivity(Intent.createChooser(intent, mContext.getString(titleId)));
     }
 
     public void onClickUpload(View view) {
