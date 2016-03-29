@@ -22,9 +22,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        Order11Response order11Response = new Order11Response();
-        order11Response.setReturn_str(" ");
-        binding.setOrder11Response(order11Response);
         AdRequest adRequest = new AdRequest.Builder().build();
         binding.adView.loadAd(adRequest);
         binding.setEventHandler(new MainActivityEventHandler(this, binding));

@@ -125,7 +125,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{TextUtils.isEmpty(order11Response.return_str) ? @string/txt_null : order11Response.return_str}"
+                    android:text="@{order11Response == null ? null : String.valueOf(order11Response.return_str)}"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/textSize" />
             </LinearLayout>
