@@ -45,7 +45,7 @@ public class MainActivityEventHandler {
     }
 
     public void onClickShareResponse(View view) {
-        Order11Response response = mBinding.getResponse();
+        Order11Response response = mBinding.getOrder11Response();
         if (response != null) {
             shareText(R.string.btn_txt_share_response, JSONUtils.toJSONString(response));
         } else {
@@ -80,7 +80,7 @@ public class MainActivityEventHandler {
     }
 
     private void onResponse(Order11Response response) {
-        mBinding.setResponse(response);
+        mBinding.setOrder11Response(response);
         dialog.dismiss();
         showMessage(R.string.txt_upload_complete);
     }

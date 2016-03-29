@@ -8,6 +8,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.laole918.umpaytest.databinding.ActivityMainBinding;
 import com.laole918.umpaytest.handlers.MainActivityEventHandler;
 import com.laole918.umpaytest.model.DeviceInfo;
+import com.laole918.umpaytest.model.Order11Response;
 import com.laole918.utils.DeviceUtils;
 
 import rx.Observable;
@@ -21,10 +22,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        Order11Response order11Response = new Order11Response();
+        order11Response.setReturn_str(" ");
+        binding.setOrder11Response(order11Response);
         AdRequest adRequest = new AdRequest.Builder().build();
         binding.adView.loadAd(adRequest);
-        binding.setHandler(new MainActivityEventHandler(this, binding));
-        bindData();
+        binding.setEventHandler(new MainActivityEventHandler(this, binding));
+        bindDeviceInfo();
     }
 
     @Override
@@ -45,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void bindData() {
+    private void bindDeviceInfo() {
         Observable.create(new Observable.OnSubscribe<DeviceInfo>() {
             @Override
             public void call(Subscriber<? super DeviceInfo> subscriber) {

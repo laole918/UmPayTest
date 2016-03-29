@@ -4,7 +4,7 @@
     <data>
         <import type="android.text.TextUtils" />
         <variable
-            name="handler"
+            name="eventHandler"
             type="com.laole918.umpaytest.handlers.MainActivityEventHandler" />
 
         <variable
@@ -12,7 +12,7 @@
             type="com.laole918.umpaytest.model.DeviceInfo" />
 
         <variable
-            name="response"
+            name="order11Response"
             type="com.laole918.umpaytest.model.Order11Response" />
     </data>
 
@@ -94,7 +94,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:onClick="@{handler.onClickShare}"
+                    android:onClick="@{eventHandler.onClickShare}"
                     android:text="@string/btn_txt_share"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/btnTextSize" />
@@ -103,7 +103,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:onClick="@{handler.onClickUpload}"
+                    android:onClick="@{eventHandler.onClickUpload}"
                     android:text="@string/btn_txt_upload"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/btnTextSize" />
@@ -125,7 +125,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{TextUtils.isEmpty(response.return_str) ? @string/txt_null : response.return_str}"
+                    android:text="@{TextUtils.isEmpty(order11Response.return_str) ? @string/txt_null : order11Response.return_str}"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/textSize" />
             </LinearLayout>
@@ -134,7 +134,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="@{handler.onClickShareResponse}"
+                android:onClick="@{eventHandler.onClickShareResponse}"
                 android:text="@string/btn_txt_share_response"
                 android:textColor="@color/textColor"
                 android:textSize="@dimen/btnTextSize" />
