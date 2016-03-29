@@ -11,4 +11,6 @@
     <string name="txt_net_error">网络连接失败！</string>
     <string name="txt_empty">没有内容可分享！</string>
     <string name="txt_uploading">上传中……</string>
+    <string name="txt_upload_complete">上传完毕！</string>
+    <string name="txt_null">null</string>
 </resources>

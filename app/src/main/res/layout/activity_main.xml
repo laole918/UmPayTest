@@ -2,7 +2,7 @@
 <layout>
 
     <data>
-
+        <import type="android.text.TextUtils" />
         <variable
             name="handler"
             type="com.laole918.umpaytest.handlers.MainActivityEventHandler" />
@@ -41,7 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:text="@{deviceInfo.iccid}"
+                    android:text="@{TextUtils.isEmpty(deviceInfo.iccid) ? @string/txt_null : deviceInfo.iccid}"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/textSize" />
             </LinearLayout>
@@ -61,7 +61,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:text="@{deviceInfo.imei}"
+                    android:text="@{TextUtils.isEmpty(deviceInfo.imei) ? @string/txt_null : deviceInfo.imei}"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/textSize" />
             </LinearLayout>
@@ -81,7 +81,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:text="@{deviceInfo.imsi}"
+                    android:text="@{TextUtils.isEmpty(deviceInfo.imsi) ? @string/txt_null : deviceInfo.imsi}"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/textSize" />
             </LinearLayout>
@@ -125,7 +125,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{response.return_str}"
+                    android:text="@{TextUtils.isEmpty(response.return_str) ? @string/txt_null : response.return_str}"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/textSize" />
             </LinearLayout>

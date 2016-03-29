@@ -82,6 +82,7 @@ public class MainActivityEventHandler {
     private void onResponse(Order11Response response) {
         mBinding.setResponse(response);
         dialog.dismiss();
+        showMessage(R.string.txt_upload_complete);
     }
 
     private void onError() {
