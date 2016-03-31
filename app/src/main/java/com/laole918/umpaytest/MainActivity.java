@@ -6,9 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.google.android.gms.ads.AdRequest;
 import com.laole918.umpaytest.databinding.ActivityMainBinding;
-import com.laole918.umpaytest.handlers.MainActivityEventHandler;
+import com.laole918.umpaytest.model.Order;
+import com.laole918.umpaytest.viewmodel.MainViewModel;
 import com.laole918.umpaytest.model.DeviceInfo;
-import com.laole918.umpaytest.model.Order11Response;
 import com.laole918.utils.DeviceUtils;
 
 import rx.Observable;
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         AdRequest adRequest = new AdRequest.Builder().build();
         binding.adView.loadAd(adRequest);
-        binding.setEventHandler(new MainActivityEventHandler(this, binding));
+        binding.setViewModel(new MainViewModel(this, binding));
         bindDeviceInfo();
     }
 
@@ -58,7 +58,11 @@ public class MainActivity extends AppCompatActivity {
                 subscriber.onNext(deviceInfo);
             }
         }).subscribe(deviceInfo -> {
-            binding.setDeviceInfo(deviceInfo);
+            Order order = new Order();
+            order.setIccid(deviceInfo.getIccid());
+            order.setImsi(deviceInfo.getImsi());
+            order.setImei(deviceInfo.getImei());
+            binding.getViewModel().order.set(order);
         });
     }
 }

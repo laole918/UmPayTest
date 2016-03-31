@@ -1,7 +1,6 @@
 package com.laole918.umpaytest.api;
 
-import com.laole918.umpaytest.model.Order11Request;
-import com.laole918.umpaytest.model.Order11Response;
+import com.laole918.umpaytest.model.Order;
 
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -13,5 +12,5 @@ import rx.Observable;
 public interface TestApi {
 
     @POST("bjfeiyu/order")
-    Observable<Order11Response> order11(@Body Order11Request request);
+    Observable<Order> order11(@Body Order request);
 }
