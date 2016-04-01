@@ -13,18 +13,22 @@ import com.laole918.utils.DeviceUtils;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends AppCompatActivity {
 
+    private CompositeSubscription mSubscriptions;
     private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSubscriptions = new CompositeSubscription();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         AdRequest adRequest = new AdRequest.Builder().build();
         binding.adView.loadAd(adRequest);
-        binding.setViewModel(new MainViewModel(this, binding));
+        binding.setViewModel(new MainViewModel(this, mSubscriptions));
         bindDeviceInfo();
     }
 
@@ -43,11 +47,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         binding.adView.destroy();
+        mSubscriptions.unsubscribe();
         super.onDestroy();
     }
 
     private void bindDeviceInfo() {
-        Observable.create(new Observable.OnSubscribe<DeviceInfo>() {
+        Subscription subscription = Observable.create(new Observable.OnSubscribe<DeviceInfo>() {
             @Override
             public void call(Subscriber<? super DeviceInfo> subscriber) {
                 DeviceInfo deviceInfo = new DeviceInfo();
@@ -64,5 +69,6 @@ public class MainActivity extends AppCompatActivity {
             order.setImei(deviceInfo.getImei());
             binding.getViewModel().order.set(order);
         });
+        mSubscriptions.add(subscription);
     }
 }

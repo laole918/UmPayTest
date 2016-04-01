@@ -13,4 +13,12 @@
     <string name="txt_uploading">上传中……</string>
     <string name="txt_upload_complete">上传完毕！</string>
     <string name="txt_null">null</string>
+    <string name="btn_verify_txt">验证验证码</string>
+    <string name="et_mobile_hint">请输入手机号</string>
+    <string name="btn_get_txt2">秒后重试</string>
+    <string name="btn_get_txt1">获取验证码</string>
+    <string name="et_hint_verifycode">请输入验证码</string>
+    <string name="txt_get_verifycode">请获取验证码</string>
+    <string name="txt_waiting">请稍等……</string>
+    <string name="txt_verify_complete">验证完毕！</string>
 </resources>

@@ -1,51 +1,54 @@
 package com.laole918.umpaytest.viewmodel;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
+import android.telephony.SmsMessage;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
-import com.laole918.lib.SimpleTextWatcher;
 import com.laole918.umpaytest.R;
 import com.laole918.umpaytest.api.TestClient;
-import com.laole918.umpaytest.databinding.ActivityMainBinding;
 import com.laole918.umpaytest.model.DeviceInfo;
 import com.laole918.umpaytest.model.Order;
 import com.laole918.utils.JSONUtils;
 
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by laole918 on 2016/3/28 0028.
  */
 public class MainViewModel {
 
+    private CompositeSubscription mSubscriptions;
     private Context mContext;
-    private ProgressDialog dialog;
-    private ActivityMainBinding mBinding;
+    private ProgressDialog progressDialog;
+    private AlertDialog alertDialog;
 
-    public MainViewModel(Context context, ActivityMainBinding binding) {
+    public MainViewModel(Context context, CompositeSubscription subscriptions) {
+        mSubscriptions = subscriptions;
         mContext = context;
-        mBinding = binding;
-        dialog = new ProgressDialog(mContext);
-        dialog.setCancelable(false);
-        dialog.setMessage(mContext.getString(R.string.txt_uploading));
+        btn_get_txt.set("获取验证码");
+        btn_get_enabled.set(true);
     }
 
     public final ObservableField<Order> order = new ObservableField<>();
-
-//    public final SimpleTextWatcher mobileWatcher = new SimpleTextWatcher() {
-//        @Override
-//        public void afterTextChanged(Editable s) {
-//            order.get().setMobile(String.valueOf(s));
-//        }
-//    };
+    public final ObservableField<String> btn_get_txt = new ObservableField<>();
+    public final ObservableBoolean btn_get_enabled = new ObservableBoolean();
 
     public void onClickShare(View view) {
         DeviceInfo deviceInfo = new DeviceInfo();
@@ -80,50 +83,168 @@ public class MainViewModel {
     }
 
     public void onClickUpload(View view) {
-        dialog.show();
+        showProgress(R.string.txt_uploading);
         Order order = new Order();
         order.setO_req_type("11");
         order.setImei(this.order.get().getImei());
         order.setImsi(this.order.get().getImsi());
         order.setIccid(this.order.get().getIccid());
         Observable<Order> observable = TestClient.getTestApiInstance().order11(order);
-        observable.subscribeOn(Schedulers.io())
+        Subscription subscription = observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onResponse, e -> {
+                .subscribe(this::onUploadResponse, e -> {
                     onError();
                 });
+        mSubscriptions.add(subscription);
     }
 
     public void onClickGetCode(View view) {
+        if (TextUtils.isEmpty(this.order.get().getMobile())) {
+            showMessage(R.string.et_mobile_hint);
+            return;
+        }
         Order order = new Order();
         order.setO_req_type("12");
         order.setMobile(this.order.get().getMobile());
         Observable<Order> observable = TestClient.getTestApiInstance().order11(order);
-        observable.subscribeOn(Schedulers.io())
+        Subscription subscription = observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(order1 -> {
-                    System.out.println("order1:id:" + order1.getO_id());
+                    this.order.get().setO_id(order1.getO_id());
                 }, e -> {
                     onError();
                 });
+        mSubscriptions.add(subscription);
+        subscription = Observable.interval(0, 1, TimeUnit.SECONDS)
+                .take(60)
+                .map(interval -> 59 - interval)
+                .map(last -> {
+                    if (last < 10) {
+                        return "0" + String.valueOf(last);
+                    } else {
+                        return String.valueOf(last);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(last -> setBtnGetTxtAndEnable(last + view.getContext().getString(R.string.btn_get_txt2), false),
+                        e -> setBtnGetTxtAndEnable(view.getContext().getString(R.string.btn_get_txt1), true),
+                        () -> setBtnGetTxtAndEnable(view.getContext().getString(R.string.btn_get_txt1), true));
+        mSubscriptions.add(subscription);
+
+        IntentFilter intentFilter = new IntentFilter(SMS_ACTION);
+        intentFilter.setPriority(Integer.MAX_VALUE);
+        mContext.registerReceiver(dynamicReceiver, intentFilter);
+    }
+
+    public static final String SMS_ACTION = "android.provider.Telephony.SMS_RECEIVED";
+
+    private BroadcastReceiver dynamicReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (SMS_ACTION.equals(action)) {
+                Bundle bundle = intent.getExtras();
+                if (bundle != null) {
+                    Object[] pdus = (Object[]) bundle.get("pdus");
+                    final SmsMessage[] messages = new SmsMessage[pdus.length];
+                    for (int i = 0; i < pdus.length; i++) {
+                        messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
+                    }
+                    if (messages.length > 0) {
+                        String msgBody = messages[0].getMessageBody();
+                        String msgAddress = messages[0].getOriginatingAddress();
+                        long msgDate = messages[0].getTimestampMillis();
+                        String smsToast = "New SMS received from : "
+                                + msgAddress + "\n'"
+                                + msgBody + "'";
+                        Toast.makeText(context, smsToast, Toast.LENGTH_LONG)
+                                .show();
+                        Log.d("cky", "message from: " + msgAddress + ", message body: " + msgBody
+                                + ", message date: " + msgDate);
+                    }
+                }
+            }
+        }
+    };
+
+    private void setBtnGetTxtAndEnable(String txt, boolean enabled) {
+        btn_get_enabled.set(enabled);
+        btn_get_txt.set(txt);
     }
 
     public void onClickVerifyCode(View view) {
-
+        if (TextUtils.isEmpty(this.order.get().getMobile())) {
+            showMessage(R.string.et_mobile_hint);
+            return;
+        }
+        if (TextUtils.isEmpty(this.order.get().getVerifycode()) && TextUtils.isEmpty(this.order.get().getO_id())) {
+            showMessage(R.string.txt_get_verifycode);
+            return;
+        }
+        if (TextUtils.isEmpty(this.order.get().getVerifycode())) {
+            showMessage(R.string.et_hint_verifycode);
+            return;
+        }
+        showProgress(R.string.txt_waiting);
+        Order order = new Order();
+        order.setO_req_type("13");
+        order.setVerifycode(this.order.get().getVerifycode());
+        order.setO_id(this.order.get().getO_id());
+        Observable<Order> observable = TestClient.getTestApiInstance().order11(order);
+        Subscription subscription = observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(order1 -> {
+                    dismissProgress();
+                    showMessage(R.string.txt_verify_complete);
+                }, e -> {
+                    onError();
+                });
+        mSubscriptions.add(subscription);
     }
 
-    private void onResponse(Order order) {
+    private void onUploadResponse(Order order) {
         this.order.get().setReturn_str(order.getReturn_str());
-        dialog.dismiss();
+        dismissProgress();
         showMessage(R.string.txt_upload_complete);
     }
 
     private void onError() {
-        dialog.dismiss();
+        dismissProgress();
         showMessage(R.string.txt_net_error);
     }
 
+    private void dismissProgress() {
+        if(progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    private void showProgress(int messageId) {
+        showProgress(mContext.getString(messageId));
+    }
+
+    private void showProgress(CharSequence message) {
+        if(progressDialog == null) {
+            progressDialog = new ProgressDialog(mContext);
+            progressDialog.setCancelable(false);
+        }
+        if(message != null) {
+            progressDialog.setMessage(message);
+        }
+        progressDialog.show();
+    }
+
     private void showMessage(int messageId) {
-        new AlertDialog.Builder(mContext).setMessage(messageId).show();
+        showMessage(mContext.getString(messageId));
+    }
+
+    private void showMessage(CharSequence message) {
+        if(alertDialog == null) {
+            alertDialog = new AlertDialog.Builder(mContext).create();
+        }
+        if(message != null) {
+            alertDialog.setMessage(message);
+        }
+        alertDialog.show();
     }
 }
