@@ -1,4 +1,4 @@
-package com.laole918.lib;
+package com.laole918.lib.text;
 
 import android.text.TextWatcher;
 
