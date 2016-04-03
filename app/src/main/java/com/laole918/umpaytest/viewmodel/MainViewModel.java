@@ -1,20 +1,17 @@
 package com.laole918.umpaytest.viewmodel;
 
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
-import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.telephony.SmsMessage;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
+import com.hwangjr.rxbus.annotation.Subscribe;
+import com.hwangjr.rxbus.annotation.Tag;
+import com.hwangjr.rxbus.thread.EventThread;
 import com.laole918.umpaytest.R;
 import com.laole918.umpaytest.api.TestClient;
 import com.laole918.umpaytest.model.DeviceInfo;
@@ -34,6 +31,10 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class MainViewModel {
 
+    public final ObservableField<Order> order = new ObservableField<>();
+    public final ObservableField<String> btn_get_txt = new ObservableField<>();
+    public final ObservableBoolean btn_get_enabled = new ObservableBoolean();
+
     private CompositeSubscription mSubscriptions;
     private Context mContext;
     private ProgressDialog progressDialog;
@@ -45,10 +46,6 @@ public class MainViewModel {
         btn_get_txt.set("获取验证码");
         btn_get_enabled.set(true);
     }
-
-    public final ObservableField<Order> order = new ObservableField<>();
-    public final ObservableField<String> btn_get_txt = new ObservableField<>();
-    public final ObservableBoolean btn_get_enabled = new ObservableBoolean();
 
     public void onClickShare(View view) {
         DeviceInfo deviceInfo = new DeviceInfo();
@@ -131,41 +128,12 @@ public class MainViewModel {
                         e -> setBtnGetTxtAndEnable(view.getContext().getString(R.string.btn_get_txt1), true),
                         () -> setBtnGetTxtAndEnable(view.getContext().getString(R.string.btn_get_txt1), true));
         mSubscriptions.add(subscription);
-
-        IntentFilter intentFilter = new IntentFilter(SMS_ACTION);
-        intentFilter.setPriority(Integer.MAX_VALUE);
-        mContext.registerReceiver(dynamicReceiver, intentFilter);
     }
 
-    public static final String SMS_ACTION = "android.provider.Telephony.SMS_RECEIVED";
-
-    private BroadcastReceiver dynamicReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (SMS_ACTION.equals(action)) {
-                Bundle bundle = intent.getExtras();
-                if (bundle != null) {
-                    Object[] pdus = (Object[]) bundle.get("pdus");
-                    final SmsMessage[] messages = new SmsMessage[pdus.length];
-                    for (int i = 0; i < pdus.length; i++) {
-                        messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
-                    }
-                    if (messages.length > 0) {
-                        String msgBody = messages[0].getMessageBody();
-                        String msgAddress = messages[0].getOriginatingAddress();
-                        long msgDate = messages[0].getTimestampMillis();
-                        String smsToast = "New SMS received from : "
-                                + msgAddress + "\n'"
-                                + msgBody + "'";
-                        Toast.makeText(context, smsToast, Toast.LENGTH_LONG)
-                                .show();
-                        Log.d("cky", "message from: " + msgAddress + ", message body: " + msgBody
-                                + ", message date: " + msgDate);
-                    }
-                }
-            }
-        }
-    };
+    @Subscribe(thread = EventThread.MAIN_THREAD, tags = {@Tag("code")})
+    public void onVerifyCodeReceived(String code) {
+        order.get().setVerifycode(code);
+    }
 
     private void setBtnGetTxtAndEnable(String txt, boolean enabled) {
         btn_get_enabled.set(enabled);
@@ -214,7 +182,7 @@ public class MainViewModel {
     }
 
     private void dismissProgress() {
-        if(progressDialog != null) {
+        if (progressDialog != null) {
             progressDialog.dismiss();
         }
     }
@@ -224,11 +192,11 @@ public class MainViewModel {
     }
 
     private void showProgress(CharSequence message) {
-        if(progressDialog == null) {
+        if (progressDialog == null) {
             progressDialog = new ProgressDialog(mContext);
             progressDialog.setCancelable(false);
         }
-        if(message != null) {
+        if (message != null) {
             progressDialog.setMessage(message);
         }
         progressDialog.show();
@@ -239,10 +207,10 @@ public class MainViewModel {
     }
 
     private void showMessage(CharSequence message) {
-        if(alertDialog == null) {
+        if (alertDialog == null) {
             alertDialog = new AlertDialog.Builder(mContext).create();
         }
-        if(message != null) {
+        if (message != null) {
             alertDialog.setMessage(message);
         }
         alertDialog.show();

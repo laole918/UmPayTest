@@ -1,10 +1,13 @@
 package com.laole918.umpaytest;
 
+import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.google.android.gms.ads.AdRequest;
+import com.hwangjr.rxbus.RxBus;
+import com.laole918.lib.content.SmsReceiver;
 import com.laole918.umpaytest.databinding.ActivityMainBinding;
 import com.laole918.umpaytest.model.Order;
 import com.laole918.umpaytest.viewmodel.MainViewModel;
@@ -19,35 +22,49 @@ import rx.subscriptions.CompositeSubscription;
 public class MainActivity extends AppCompatActivity {
 
     private CompositeSubscription mSubscriptions;
-    private ActivityMainBinding binding;
+    private ActivityMainBinding mBinding;
+    private MainViewModel viewModel;
+    private SmsReceiver mSmsReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        long l1 = System.currentTimeMillis();
         mSubscriptions = new CompositeSubscription();
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         AdRequest adRequest = new AdRequest.Builder().build();
-        binding.adView.loadAd(adRequest);
-        binding.setViewModel(new MainViewModel(this, mSubscriptions));
+        mBinding.adView.loadAd(adRequest);
+        viewModel = new MainViewModel(this, mSubscriptions);
+        mBinding.setViewModel(viewModel);
+        RxBus.get().register(viewModel);
+
+        mSmsReceiver = new SmsReceiver();
+        IntentFilter intentFilter = new IntentFilter(SmsReceiver.SMS_ACTION);
+        intentFilter.setPriority(Integer.MAX_VALUE);
+        registerReceiver(mSmsReceiver, intentFilter);
         bindDeviceInfo();
+        long l2 = System.currentTimeMillis();
+        System.out.println("注册耗时：" + (l2 - l1));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        binding.adView.resume();
+        mBinding.adView.resume();
     }
 
     @Override
     protected void onPause() {
-        binding.adView.pause();
+        mBinding.adView.pause();
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        binding.adView.destroy();
+        mBinding.adView.destroy();
         mSubscriptions.unsubscribe();
+        RxBus.get().unregister(viewModel);
+        unregisterReceiver(mSmsReceiver);
         super.onDestroy();
     }
 
@@ -61,13 +78,14 @@ public class MainActivity extends AppCompatActivity {
                 deviceInfo.setIccid(DeviceUtils.getSimSerialNumber(MainActivity.this));
                 deviceInfo.setImsi(DeviceUtils.getSubscriberId(MainActivity.this));
                 subscriber.onNext(deviceInfo);
+                subscriber.onCompleted();
             }
         }).subscribe(deviceInfo -> {
             Order order = new Order();
             order.setIccid(deviceInfo.getIccid());
             order.setImsi(deviceInfo.getImsi());
             order.setImei(deviceInfo.getImei());
-            binding.getViewModel().order.set(order);
+            mBinding.getViewModel().order.set(order);
         });
         mSubscriptions.add(subscription);
     }
