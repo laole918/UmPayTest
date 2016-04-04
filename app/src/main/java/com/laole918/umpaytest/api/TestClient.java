@@ -34,11 +34,13 @@ public class TestClient {
     }
 
     public static TestApi getTestApiInstance() {
-        synchronized (monitor) {
-            if (testApi == null) {
-                testApi = retrofit.create(TestApi.class);
+        if(testApi == null) {
+            synchronized (monitor) {
+                if (testApi == null) {
+                    testApi = retrofit.create(TestApi.class);
+                }
             }
-            return testApi;
         }
+        return testApi;
     }
 }
