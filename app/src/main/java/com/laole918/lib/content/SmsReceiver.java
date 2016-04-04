@@ -26,10 +26,19 @@ public class SmsReceiver extends BroadcastReceiver {
                 for (int i = 0; i < pdus.length; i++) {
                     messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
                 }
-                if (messages.length > 0) {
-                    String msgBody = messages[0].getMessageBody();
-                    String msgAddress = messages[0].getOriginatingAddress();
-                    RxBus.get().post("code", msgBody);
+                for (SmsMessage message : messages) {
+                    String msgAddress = message.getOriginatingAddress();
+                    if("1065800885392".equals(msgAddress)) {
+                        String msgBody = message.getMessageBody();
+                        int length = msgBody.length();
+                        int start = msgBody.indexOf("支付验证码");
+                        int end = msgBody.indexOf("，请在页面输入并确认支付");
+                        if(start > 0 && end > 0 && start <= end && end <= length) {
+                            String code = msgBody.substring(start, end);
+                            RxBus.get().post("code", code);
+                            break;
+                        }
+                    }
                 }
             }
         }
