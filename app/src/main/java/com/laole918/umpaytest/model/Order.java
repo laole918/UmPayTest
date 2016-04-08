@@ -10,22 +10,17 @@ import com.laole918.umpaytest.BR;
  */
 public class Order extends BaseObservable {
 
-    @Bindable
     private String imei;
-    @Bindable
     private String iccid;
-    @Bindable
     private String imsi;
-    @Bindable
     private String mobile;
-    @Bindable
     private String verifycode;
-    @Bindable
     private String return_str;
 
     private String o_id;
     private String o_req_type;
 
+    @Bindable
     public String getImei() {
         return imei;
     }
@@ -35,6 +30,7 @@ public class Order extends BaseObservable {
         notifyPropertyChanged(BR.imei);
     }
 
+    @Bindable
     public String getIccid() {
         return iccid;
     }
@@ -44,6 +40,7 @@ public class Order extends BaseObservable {
         notifyPropertyChanged(BR.iccid);
     }
 
+    @Bindable
     public String getImsi() {
         return imsi;
     }
@@ -53,6 +50,7 @@ public class Order extends BaseObservable {
         notifyPropertyChanged(BR.imsi);
     }
 
+    @Bindable
     public String getMobile() {
         return mobile;
     }
@@ -62,6 +60,7 @@ public class Order extends BaseObservable {
         notifyPropertyChanged(BR.mobile);
     }
 
+    @Bindable
     public String getVerifycode() {
         return verifycode;
     }
@@ -71,6 +70,7 @@ public class Order extends BaseObservable {
         notifyPropertyChanged(BR.verifycode);
     }
 
+    @Bindable
     public String getReturn_str() {
         return return_str;
     }
