@@ -14,14 +14,10 @@ import com.laole918.lib.text.SimpleTextWatcher;
  */
 public class BindingAdapters {
 
-    @BindingAdapter({"app:edit_text"})
-    public static void addTextChangedListener(EditText editText, CharSequence edit_text) {
-        ViewDataBinding binding = DataBindingUtil.findBinding(editText);
-        editText.addTextChangedListener(new SimpleTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-//                binding.setVariable()
-            }
-        });
+    @BindingAdapter({"android:addTextChangedListener"})
+    public static void addTextChangedListener(EditText view, TextWatcher watcher) {
+        if(watcher != null) {
+            view.addTextChangedListener(watcher);
+        }
     }
 }

@@ -2,7 +2,7 @@
 <layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="com.laole918.umpaytest.model.Order" />
         <import type="android.text.TextUtils" />
 
         <variable
@@ -153,7 +153,7 @@
                     android:layout_weight="1"
                     android:hint="@string/et_mobile_hint"
                     android:inputType="phone"
-                    android:text="@={viewModel.order.mobile}"
+                    android:addTextChangedListener="@{viewModel.order.getMobileWatcher}"
                     android:textColor="@color/textColor"
                     android:textColorHint="@color/textColorHint"
                     android:textSize="@dimen/textSize" />
@@ -173,7 +173,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/et_hint_verifycode"
                 android:inputType="number"
-                android:text="@={viewModel.order.verifycode}"
+                android:addTextChangedListener="@{viewModel.order.getVerifycodeWatcher}"
                 android:textColor="@color/textColor"
                 android:textColorHint="@color/textColorHint"
                 android:textSize="@dimen/textSize" />
