@@ -31,3 +31,7 @@
 
 -keepattributes Signature
 -keepattributes Exceptions
+
+# rxbus
+-dontwarn com.hwangjr.rxbus.**
+-keep class com.hwangjr.rxbus.** { *; }
