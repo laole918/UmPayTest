@@ -58,16 +58,6 @@ public class Order extends BaseObservable {
         return mobile;
     }
 
-    public TextWatcher getMobileWatcher() {
-        return new SimpleTextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                mobile = String.valueOf(s);
-            }
-        };
-    }
-
     public void setMobile(String mobile) {
         this.mobile = mobile;
         notifyPropertyChanged(BR.mobile);
@@ -76,16 +66,6 @@ public class Order extends BaseObservable {
     @Bindable
     public String getVerifycode() {
         return verifycode;
-    }
-
-    public TextWatcher getVerifycodeWatcher() {
-        return new SimpleTextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                verifycode = String.valueOf(s);
-            }
-        };
     }
 
     public void setVerifycode(String verifycode) {

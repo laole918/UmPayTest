@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 
 import com.hwangjr.rxbus.annotation.Subscribe;
 import com.hwangjr.rxbus.annotation.Tag;
 import com.hwangjr.rxbus.thread.EventThread;
+import com.laole918.lib.text.SimpleTextWatcher;
 import com.laole918.umpaytest.R;
 import com.laole918.umpaytest.api.TestClient;
 import com.laole918.umpaytest.model.DeviceInfo;
@@ -45,6 +48,26 @@ public class MainViewModel {
         mContext = context;
         btn_get_txt.set("获取验证码");
         btn_get_enabled.set(true);
+    }
+
+    public TextWatcher getMobileWatcher() {
+        return new SimpleTextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                order.get().setMobile(String.valueOf(s));
+            }
+        };
+    }
+
+    public TextWatcher getVerifycodeWatcher() {
+        return new SimpleTextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                order.get().setVerifycode(String.valueOf(s));
+            }
+        };
     }
 
     public void onClickShare(View view) {

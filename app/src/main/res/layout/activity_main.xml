@@ -153,7 +153,7 @@
                     android:layout_weight="1"
                     android:hint="@string/et_mobile_hint"
                     android:inputType="phone"
-                    android:addTextChangedListener="@{viewModel.order.getMobileWatcher}"
+                    android:addTextChangedListener="@{viewModel.getMobileWatcher}"
                     android:textColor="@color/textColor"
                     android:textColorHint="@color/textColorHint"
                     android:textSize="@dimen/textSize" />
@@ -173,7 +173,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/et_hint_verifycode"
                 android:inputType="number"
-                android:addTextChangedListener="@{viewModel.order.getVerifycodeWatcher}"
+                android:addTextChangedListener="@{viewModel.getVerifycodeWatcher}"
                 android:textColor="@color/textColor"
                 android:textColorHint="@color/textColorHint"
                 android:textSize="@dimen/textSize" />
