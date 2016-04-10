@@ -2,10 +2,7 @@ package com.laole918.umpaytest.model;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
-import android.text.Editable;
-import android.text.TextWatcher;
 
-import com.laole918.lib.text.SimpleTextWatcher;
 import com.laole918.umpaytest.BR;
 
 /**
