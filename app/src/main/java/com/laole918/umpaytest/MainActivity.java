@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         long l1 = System.currentTimeMillis();
         mSubscriptions = new CompositeSubscription();
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("65EF500AFDED970355528DA273D72748").build();
         mBinding.adView.loadAd(adRequest);
         viewModel = new MainViewModel(this, mSubscriptions);
         mBinding.setViewModel(viewModel);
